@@ -7,7 +7,7 @@ const jwtSecret = "jkjJ1235Ohno!";
 const LIFETIME_JWT = 24 * 60 * 60 * 1000 ; // 10;// in seconds // 24 * 60 * 60 * 1000 = 24h 
 
 /* GET user list : secure the route with JWT authorization */
-router.get("/", authorize, function (req, res, next) {
+router.get("/", function (req, res, next) {
     return res.json(User.list);
 });
 
