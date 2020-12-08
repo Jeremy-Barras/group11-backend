@@ -9,6 +9,9 @@ class User {
     this.username = username;
     this.email = email;
     this.password = password;
+    this.bestScoreEasy = 0;
+    this.bestScoreMedium = 0;
+    this.bestScoreHard = 0;
   }
 
   /* return a promise with async / await */ 
@@ -20,6 +23,9 @@ class User {
       username: this.email,
       email: this.email,
       password: hashedPassword,
+      bestScoreEasy: this.bestScoreEasy,
+      bestScoreMedium: this.bestScoreMedium,
+      bestScoreHard: this.bestScoreHard,
     });
     saveUserListToFile(FILE_PATH, userList);
     return true;
@@ -82,6 +88,30 @@ class User {
     }
     return;
   }
+
+  getBestScore(username,difficulty) {
+    const userList = getUserListFromFile(FILE_PATH);
+    for (let index = 0; index < userList.length; index++) {
+      if (userList[index].username === username){
+        if(difficulty == "Easy") return userList[index].bestScoreEasy;
+        if(difficulty == "Medium") return userList[index].bestScoreMedium;
+        return userList[index].bestScoreHard;
+      } 
+    }
+    return;
+  }
+
+  static update(username, nvBestScore, difficulty) {
+    let userList = getUserListFromFile(FILE_PATH);
+    let index = userList.findIndex((user) => user.username == username);
+    if (index < 0) return;
+    if(difficulty === "Easy") userList[index].bestScoreEasy = nvBestScore;
+    if(difficulty === "Medium") userList[index].bestScoreMedium = nvBestScore;
+    if(difficulty === "Hard") userList[index].bestScoreHard = nvBestScore;
+    saveUserListToFile(FILE_PATH, userList);
+    return;
+  }
+
 }
 
 function getUserListFromFile(filePath) {

@@ -23,7 +23,10 @@ router.post("/login", function (req, res, next) {
           return res.status(500).send(err.message);
         }
         console.log("POST users/ token:", token);
-        return res.json({ username: user.username, token });
+        let userBestScoreEasy = user.getBestScore(user.username,"Easy");
+        let userBestScoreMedium = user.getBestScore(user.username,"Medium");
+        let userBestScoreHard = user.getBestScore(user.username,"Hard");
+        return res.json({ username: user.username, token, bestScoreEasy: userBestScoreEasy, bestScoreMedium: userBestScoreMedium, bestScoreHard: userBestScoreHard });
       });
     } else {
       console.log("POST users/login Error:", "Unauthentified");
@@ -47,7 +50,7 @@ router.post("/", function (req, res, next) {
         return res.status(500).send(err.message);
       }
       console.log("POST users/ token:", token);
-      return res.json({ username: newUser.username, token });
+      return res.json({ username: newUser.username, token, bestScoreEasy: newUser.bestScoreEasy, bestScoreMedium: newUser.bestScoreMedium, bestScoreHard: newUser.bestScoreHard });
     });
   });
 });
@@ -61,6 +64,15 @@ router.get("/:username", function (req, res, next) {
   } else {
     return res.status(404).send("ressource not found");
   }
+});
+
+/* PUT a update bestScore */
+router.put("/:bestScore/:difficulty", function (req, res, next) {
+  console.log("bestScore:", req.params.bestScore);
+  console.log("difficulty:", req.params.difficulty);
+  console.log("username:", req.body.username);
+  if (!User.isUser(req.body.username)) return res.status(409).end();
+  User.update(req.body.username,req.params.bestScore,req.params.difficulty);
 });
 
 module.exports = router;
