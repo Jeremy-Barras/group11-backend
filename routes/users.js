@@ -13,20 +13,20 @@ router.get("/", function (req, res, next) {
 
 /* POST user data for authentication */
 router.post("/login", function (req, res, next) {
-  let user = new User(req.body.email, req.body.email, req.body.password);
+  let user = new User(null, req.body.email, req.body.password);
   console.log("POST users/login:", User.list);
   user.checkCredentials(req.body.email, req.body.password).then((match) => {
     if (match) {
-      jwt.sign({ username: user.username }, jwtSecret,{ expiresIn: LIFETIME_JWT }, (err, token) => {
+      jwt.sign({ email: user.email }, jwtSecret,{ expiresIn: LIFETIME_JWT }, (err, token) => {
         if (err) {
           console.error("POST users/ :", err);
           return res.status(500).send(err.message);
         }
         console.log("POST users/ token:", token);
-        let userBestScoreEasy = user.getBestScore(user.username,"Easy");
-        let userBestScoreMedium = user.getBestScore(user.username,"Medium");
-        let userBestScoreHard = user.getBestScore(user.username,"Hard");
-        return res.json({ username: user.username, token, bestScoreEasy: userBestScoreEasy, bestScoreMedium: userBestScoreMedium, bestScoreHard: userBestScoreHard });
+        let userBestScoreEasy = user.getBestScore(user.email,"Easy");
+        let userBestScoreMedium = user.getBestScore(user.email,"Medium");
+        let userBestScoreHard = user.getBestScore(user.email,"Hard");
+        return res.json({ email: user.email, token, bestScoreEasy: userBestScoreEasy, bestScoreMedium: userBestScoreMedium, bestScoreHard: userBestScoreHard });
       });
     } else {
       console.log("POST users/login Error:", "Unauthentified");
@@ -41,7 +41,7 @@ router.post("/", function (req, res, next) {
   console.log("email:", req.body.email);
   if (User.isUser(req.body.email))
     return res.status(409).end();
-  let newUser = new User(req.body.email, req.body.email, req.body.password);
+  let newUser = new User(req.body.username, req.body.email, req.body.password);
   newUser.save().then(() => {
     console.log("afterRegisterOp:", User.list);
     jwt.sign({ username: newUser.username}, jwtSecret,{ expiresIn: LIFETIME_JWT }, (err, token) => {
@@ -70,9 +70,9 @@ router.get("/:username", function (req, res, next) {
 router.put("/:bestScore/:difficulty", function (req, res, next) {
   console.log("bestScore:", req.params.bestScore);
   console.log("difficulty:", req.params.difficulty);
-  console.log("username:", req.body.username);
-  if (!User.isUser(req.body.username)) return res.status(409).end();
-  User.update(req.body.username,req.params.bestScore,req.params.difficulty);
+  console.log("email:", req.body.email);
+  if (!User.isUser(req.body.email)) return res.status(409).end();
+  User.update(req.body.email,req.params.bestScore,req.params.difficulty);
 });
 
 module.exports = router;

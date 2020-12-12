@@ -20,7 +20,7 @@ class User {
     const hashedPassword = await bcrypt.hash(this.password, saltRounds);
     console.log("save:", this.email);
     userList.push({
-      username: this.email,
+      username: this.username,
       email: this.email,
       password: hashedPassword,
       bestScoreEasy: this.bestScoreEasy,
@@ -81,18 +81,18 @@ class User {
     return userFound !== undefined;
   }
 
-  static getUserFromList(username) {
+  static getUserFromList(email) {
     const userList = getUserListFromFile(FILE_PATH);
     for (let index = 0; index < userList.length; index++) {
-      if (userList[index].username === username) return userList[index];
+      if (userList[index].email === email) return userList[index];
     }
     return;
   }
 
-  getBestScore(username,difficulty) {
+  getBestScore(email,difficulty) {
     const userList = getUserListFromFile(FILE_PATH);
     for (let index = 0; index < userList.length; index++) {
-      if (userList[index].username === username){
+      if (userList[index].email === email){
         if(difficulty == "Easy") return userList[index].bestScoreEasy;
         if(difficulty == "Medium") return userList[index].bestScoreMedium;
         return userList[index].bestScoreHard;
@@ -101,9 +101,9 @@ class User {
     return;
   }
 
-  static update(username, nvBestScore, difficulty) {
+  static update(email, nvBestScore, difficulty) {
     let userList = getUserListFromFile(FILE_PATH);
-    let index = userList.findIndex((user) => user.username == username);
+    let index = userList.findIndex((user) => user.email == email);
     if (index < 0) return;
     if(difficulty === "Easy") userList[index].bestScoreEasy = nvBestScore;
     if(difficulty === "Medium") userList[index].bestScoreMedium = nvBestScore;
