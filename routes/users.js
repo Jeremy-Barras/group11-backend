@@ -50,7 +50,7 @@ router.post("/", function (req, res, next) {
         return res.status(500).send(err.message);
       }
       console.log("POST users/ token:", token);
-      return res.json({ username: newUser.username, token, bestScoreEasy: newUser.bestScoreEasy, bestScoreMedium: newUser.bestScoreMedium, bestScoreHard: newUser.bestScoreHard });
+      return res.json({ email: newUser.email, token, bestScoreEasy: newUser.bestScoreEasy, bestScoreMedium: newUser.bestScoreMedium, bestScoreHard: newUser.bestScoreHard });
     });
   });
 });
