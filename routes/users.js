@@ -1,4 +1,5 @@
 var express = require("express");
+var validator = require("validator");
 var router = express.Router();
 var User = require("../model/User.js");
 let { authorize, signAsynchronous } = require("../utils/auth");
@@ -39,6 +40,9 @@ router.post("/login", function (req, res, next) {
 router.post("/", function (req, res, next) {
   console.log("POST users/", User.list);
   console.log("email:", req.body.email);
+  if(!validator.isStrongPassword(req.body.password)){
+    return res.status(410).end();
+  }
   if (User.isUser(req.body.email))
     return res.status(409).end();
   let newUser = new User(req.body.username, req.body.email, req.body.password);
