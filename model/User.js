@@ -4,6 +4,7 @@ const saltRounds = 10;
 const myPlaintextPassword = "145OkyayNo668Pass";
 const FILE_PATH = __dirname + "/users.json";
 
+//Rajout de 3 variables pour retenir le score
 class User {
   constructor(username, email, password) {
     this.username = username;
@@ -46,30 +47,6 @@ class User {
       .catch((err) => err);
   }
 
-  // Some example of bcrypt used with sync function
-  /*
-  save() {
-    let userList = getUserListFromFile(FILE_PATH);
-    const hashedPassword = bcrypt.hashSync(this.password, saltRounds);
-
-    userList.push({
-      username: this.email,
-      email: this.email,
-      password: hashedPassword,
-    });
-
-    saveUserListToFile(FILE_PATH, userList);
-  }
-
-  checkCredentials(email, password) {
-    if (!email || !password) return false;
-    let userFound = User.getUserFromList(email);
-    console.log("User::checkCredentials:", userFound, " password:", password);
-    if (!userFound) return false;
-    const match = bcrypt.compareSync(password, userFound.password);
-    return match;
-  }*/
-
   static get list() {
     let userList = getUserListFromFile(FILE_PATH);
     return userList;
@@ -89,6 +66,7 @@ class User {
     return;
   }
 
+  //Fonction qui permet de recuperer le bestScore d'un utilisateur en fonction du mode de difficulté
   getBestScore(email,difficulty) {
     const userList = getUserListFromFile(FILE_PATH);
     for (let index = 0; index < userList.length; index++) {
@@ -101,6 +79,7 @@ class User {
     return;
   }
 
+  //Fonction qui permet de changer le bestScore d'un utilisateur en fonction du mode de difficulté
   static update(email, nvBestScore, difficulty) {
     let userList = getUserListFromFile(FILE_PATH);
     let index = userList.findIndex((user) => user.email == email);
